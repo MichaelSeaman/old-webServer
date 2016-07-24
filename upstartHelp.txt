@@ -1,0 +1,29 @@
+You may also want to consider using the upstart utility. 
+It will allow you to start, stop and restart you node application like a service. 
+Upstart can configured to automatically restart your application if it crashes.
+
+Install upstart:
+
+sudo apt-get install upstart
+Create a simple script for your application that will look something like:
+
+#!upstart
+description "my app"
+
+start on started mountall
+stop on shutdown
+
+# Automatically Respawn:
+respawn
+respawn limit 99 5
+
+env NODE_ENV=production
+
+exec node /somepath/myapp/app.js >> /var/log/myapp.log 2>&1
+Then copy the script file (myapp.conf) to /etc/init and make sure its marked as executable. 
+Your application can then be managed using the following commands:
+
+sudo start myapp
+sudo stop myapp
+sudo restart myapp
+
